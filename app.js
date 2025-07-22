@@ -8,17 +8,47 @@ const clearCompletedBtn = document.getElementById('clearCompleted');
 const clearAllBtn = document.getElementById('clearAll');
 const emptyState = document.getElementById('emptyState');
 const currentDate = document.getElementById('currentDate');
+const themeToggle = document.getElementById('themeToggle');
 
 // Application State
 let todos = JSON.parse(localStorage.getItem('todos')) || [];
 let currentFilter = 'all';
 
+// Theme Management
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Add visual feedback
+    themeToggle.style.transform = 'scale(0.9) rotate(180deg)';
+    setTimeout(() => {
+        themeToggle.style.transform = '';
+    }, 200);
+    
+    showNotification(
+        `Switched to ${newTheme} mode`, 
+        'info'
+    );
+}
+
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
     displayCurrentDate();
     renderTodos();
     updateTaskCount();
 });
+
+// Event Listeners
+themeToggle.addEventListener('click', toggleTheme);
 
 // Display Current Date
 function displayCurrentDate() {
